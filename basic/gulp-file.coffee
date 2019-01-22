@@ -11,16 +11,24 @@ cliTable		= require 'cli-table'
 # compile final values (consts to be remplaced at compile time)
 # handlers
 compileCoffee = ->
-	gulp.src 'assets/**/[!_]*.coffee', nodir: true
+	gulp.src ['assets/**/[!_]*.coffee', '!assets/i18n/**/*.coffee'], nodir: true
 		# include related files
 		.pipe include hardFail: true
 		# convert to js
 		.pipe coffeescript(bare: true).on 'error', errorHandler
 		.pipe gulp.dest 'build'
 		.on 'error', errorHandler
+# i18n
+compileI18n = ->
+	gulp.src 'assets/i18n/**/*.coffee'
+		.pipe coffeescript bare: true
+		.pipe Gi18nCompiler()
+		.pipe gulp.dest 'build/i18n'
+		.on 'error', gutil.log
 # watch files
 watch = ->
-	gulp.watch ['assets/**/*.coffee'], compileCoffee
+	gulp.watch ['assets/**/[!_]*.coffee', '!assets/i18n/**/*.coffee'], compileCoffee
+	gulp.watch 'assets/i18n/**/*.coffee', compileI18n
 	return
 
 # error handler
@@ -52,4 +60,4 @@ errorHandler= (err)->
 	return
 
 # default task
-gulp.task 'default', gulp.series compileCoffee, watch
+gulp.task 'default', gulp.series gulp.parallel(compileCoffee, compileI18n), watch
