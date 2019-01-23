@@ -7,6 +7,7 @@ rename			= require "gulp-rename"
 coffeescript	= require 'gulp-coffeescript'
 PluginError		= gulp.PluginError
 cliTable		= require 'cli-table'
+Gi18nCompiler = require 'gridfw-i18n-gulp'
 
 # compile final values (consts to be remplaced at compile time)
 # handlers
