@@ -8,16 +8,28 @@ coffeescript	= require 'gulp-coffeescript'
 PluginError		= gulp.PluginError
 cliTable		= require 'cli-table'
 Gi18nCompiler = require 'gridfw-i18n-gulp'
+Template		= require 'gulp-template'
+
+# settings
+settings=
+	mode: gutil.env.mode || 'dev'
+	isProd: gutil.env.mode is 'prod'
 
 # compile final values (consts to be remplaced at compile time)
 # handlers
 compileCoffee = ->
-	gulp.src ['assets/**/[!_]*.coffee', '!assets/i18n/**/*.coffee'], nodir: true
+	glp = gulp.src ['assets/**/[!_]*.coffee', '!assets/i18n/**/*.coffee'], nodir: true
 		# include related files
 		.pipe include hardFail: true
+		# templating
+		.pipe Template settings
 		# convert to js
 		.pipe coffeescript(bare: true).on 'error', errorHandler
-		.pipe gulp.dest 'build'
+	# if is prod
+	if settings.isProd
+		glp = glp.pipe uglify()
+	# dest
+	glp.pipe gulp.dest 'build'
 		.on 'error', errorHandler
 # i18n
 compileI18n = ->

@@ -2,12 +2,24 @@
  * Config file
 ###
 module.exports=
-	### DEV PLUGINS ###
-	devPlugins:
-		devTools:
-			require: '../../../dev-tools'
+	### APP INFO ###
+	name: 'Basic Gridfw app'
+	email: 'contact@gridfw.com'
+	author: 'Gridfw team'
+	### APP STATUS ###
+	# mode
+	mode: '<%= mode %>'
 	### PLUGINS ###
 	plugins:
+		# dev plugins
+		<% if(mode === 'dev'){ %>
+		devTools:
+			require: '../../../dev-tools'
+		errorHandling:
+			require: '../../../gridfw-errors'
+		<% } %>
+		
+		# common plugins
 		i18n:
 			require: '../../../i18n'
 			locals: 'i18n/**/*.js'	# local files
