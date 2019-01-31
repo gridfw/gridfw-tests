@@ -8,7 +8,8 @@ coffeescript	= require 'gulp-coffeescript'
 PluginError		= gulp.PluginError
 cliTable		= require 'cli-table'
 Gi18nCompiler = require 'gridfw-i18n-gulp'
-Template		= require 'gulp-template'
+
+GfwCompiler		= require '../../compiler'
 
 # settings
 settings=
@@ -22,55 +23,35 @@ compileCoffee = ->
 		# include related files
 		.pipe include hardFail: true
 		# templating
-		.pipe Template settings
+		.pipe GfwCompiler.template settings
 		# convert to js
-		.pipe coffeescript(bare: true).on 'error', errorHandler
+		.pipe coffeescript(bare: true).on 'error', GfwCompiler.logError
 	# if is prod
 	if settings.isProd
 		glp = glp.pipe uglify()
 	# dest
 	glp.pipe gulp.dest 'build'
-		.on 'error', errorHandler
+		.on 'error', GfwCompiler.logError
 # i18n
 compileI18n = ->
 	gulp.src 'assets/i18n/**/*.coffee'
 		.pipe coffeescript bare: true
 		.pipe Gi18nCompiler()
 		.pipe gulp.dest 'build/i18n'
-		.on 'error', gutil.log
+		.on 'error', GfwCompiler.logError
+
+# compile views
+compileViews = ->
+	gulp.src ['assets/views/**/[!_]*.pug', 'assets/views/**/[!_]*.ejs']
+		.pipe GfwCompiler.views()
+		.pipe gulp.dest 'build/views'
+		.on 'error', GfwCompiler.logError
 # watch files
 watch = ->
 	gulp.watch ['assets/**/[!_]*.coffee', '!assets/i18n/**/*.coffee'], compileCoffee
 	gulp.watch 'assets/i18n/**/*.coffee', compileI18n
-	return
-
-# error handler
-errorHandler= (err)->
-	# get error line
-	expr = /:(\d+):(\d+):/.exec err.stack
-	if expr
-		line = parseInt expr[1]
-		col = parseInt expr[2]
-		code = err.code?.split("\n")[line-3 ... line + 3].join("\n")
-	else
-		code = line = col = '??'
-	# Render
-	table = new cliTable()
-	table.push {Name: err.name},
-		{Filename: err.filename},
-		{Message: err.message},
-		{Line: line},
-		{Col: col}
-	console.error table.toString()
-	console.log '\x1b[31mStack:'
-	console.error '\x1b[0m┌─────────────────────────────────────────────────────────────────────────────────────────┐'
-	console.error '\x1b[34m', err.stack
-	console.log '\x1b[0m└─────────────────────────────────────────────────────────────────────────────────────────┘'
-	console.log '\x1b[31mCode:'
-	console.error '\x1b[0m┌─────────────────────────────────────────────────────────────────────────────────────────┐'
-	console.error '\x1b[34m', code
-	console.log '\x1b[0m└─────────────────────────────────────────────────────────────────────────────────────────┘'
+	gulp.watch 'assets/views/**/*.pug', compileViews
 	return
 
 # default task
-gulp.task 'default', gulp.series gulp.parallel(compileCoffee, compileI18n), watch
+gulp.task 'default', gulp.series gulp.parallel(compileCoffee, compileViews, compileI18n), watch
