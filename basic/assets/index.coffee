@@ -12,6 +12,8 @@ app.get '/', (ctx) ->
 	console.log '---- infos: ', infos
 	ctx.send 'hello word'
 
-
-
-app.listen 3000
+app.listen(3000)
+	.then ->
+		console.log '--- App is running'
+	.catch (err)->
+		console.log '--- Got error: ', err

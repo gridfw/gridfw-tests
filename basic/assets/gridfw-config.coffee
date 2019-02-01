@@ -11,7 +11,7 @@ module.exports=
 	mode: '<%= mode %>'
 	### PLUGINS ###
 	plugins:
-		# dev plugins
+		# # dev plugins
 		<% if(mode === 'dev'){ %>
 		devTools:
 			require: '../../../dev-tools'
