@@ -3,6 +3,7 @@ GridFw = require '../../../gridfw'
 app = new GridFw()
 
 app.get '/', (ctx) ->
+	console.log '---- call home page'
 	infos =
 		app:
 			uri: "#{app.protocol}://#{app.host}:#{app.port}#{app.path}"

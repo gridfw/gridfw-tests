@@ -17,6 +17,7 @@
   },
   "devDependencies": {
     "cli-table": "^0.3.1",
+    "gridfw-compiler": "^1.0.0",
     "gridfw-i18n-gulp": "^1.0.2",
     "gulp": "^4.0.0",
     "gulp-chug": "^0.5.1",

@@ -7,12 +7,11 @@ uglify			= require 'gulp-uglify-es'
 coffeescript	= require 'gulp-coffeescript'
 Gi18nCompiler = require 'gridfw-i18n-gulp'
 
-GfwCompiler		= require '../../compiler'
+GfwCompiler		= require 'gridfw-compiler'
 
 # settings
 settings=
-	mode: gutil.env.mode || 'dev'
-	isProd: gutil.env.mode is 'prod'
+	isProd: gutil.env.hasOwnProperty('prod')
 
 # compile final values (consts to be remplaced at compile time)
 # handlers
