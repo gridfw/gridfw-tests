@@ -10,8 +10,10 @@ Gi18nCompiler = require 'gridfw-i18n-gulp'
 GfwCompiler		= require 'gridfw-compiler'
 
 # settings
+isProd= gutil.env.hasOwnProperty('prod')
 settings=
-	isProd: gutil.env.hasOwnProperty('prod')
+	mode: if isProd then 'prod' else 'dev'
+	isProd: isProd
 
 # compile final values (consts to be remplaced at compile time)
 # handlers
