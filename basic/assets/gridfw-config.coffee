@@ -8,11 +8,11 @@ module.exports=
 	author: 'Gridfw team'
 	### APP STATUS ###
 	# mode
-	mode: '<%= mode %>'
+	isProd: '<%= isProd %>'
 	### PLUGINS ###
 	plugins:
 		# # dev plugins
-		<% if(mode === 'dev'){ %>
+		<% if(!isProd){ %>
 		devTools:
 			require: '../../../dev-tools'
 		errorHandling:
